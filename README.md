@@ -8,3 +8,5 @@ LECTURES (all lectures: last week of the course)
 PRACTICALS (all practical texts performed during the course)
 SCRIPTS (most written scripts during the course. They are actually put here in a bulk form. Will be clearly presented later).
 DATA ( a set of date (mainly genome sequences and corresponding coding and protein sequenes, used during the course).
+Course material is also available through the course web page:
+https://webext.pasteur.fr/tekaia/BCGAIPT2017.html
