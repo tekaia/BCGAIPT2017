@@ -1,0 +1,2 @@
+#!/bin/sh
+clustalw -infile=$1 -output=PIR -align 2>&1 > /dev/null
