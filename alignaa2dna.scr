@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#align dna sequences according to their aa multiple alignment
+
+`alignaa2dna.pl $1.fa1 > $1.paml`

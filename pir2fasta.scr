@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#use pir2fasta.scr filealignment.pir &
+#output is filealignment.fa
+
+FILE=`echo $1 | sed -e "s/\.pir//g"`
+cat $1 | sed -e "s/^>P1;/>/g" -e "/^$/d" -e "/^\*/d" > $FILE.fa

@@ -1,0 +1,49 @@
+#!/bin/perl
+
+#For clusters of orthologs (prt sequences) and their corresponding clusters of genes
+#for each cluster align its gene sequences at the codon level using their multiple alignment protein sequences.
+#Use clustprt.scr &
+
+@PARTS=`ls SPO*.prt`;
+
+while( $P = shift @PARTS)
+{
+
+$P1=substr($P,0, length ($P)-5);
+
+$PIR="$P1.pir";
+$FA1="$P1.fa1";
+$FA="$P1.fa";
+$DNA="$P1.dna";
+$FN="$P1.fn";
+$PAML="$P1.paml";
+$DND="$P1.dnd";
+
+$P=substr($P,0, length ($P)-1);
+system(`sed -e "s/ .*//g" $P> ZZZ`);
+system("mv ZZZ $P");
+
+system("clust.scr $P");
+
+system(`sed -e "s/>P1;/>/g" $PIR | sed -e "/^\*/d" | sed -e "/^\$/d" > $FA1`);
+
+# one line alignments
+system(`cat $FA1 | multalign2oneline.pl > $FA`);
+
+system(`cat $DNA |  multalign2oneline.pl > $FN`);
+
+#split oneline sequences into individual sequences
+system(`splitdnafasta.pl $FN`);
+
+# aligndna according to aa
+system(`alignaa2dna.pl $FA `);
+
+#remove individual sequences created by splitfasta
+ system(`grep ">" $FN | sed -e "s/>/rm /g" -e "s/\$/.dna/g" > xx `);
+system(`chmod u+x xx `);
+system(`xx`);
+
+system(`rm xx $FA1 $PIR $DND`);
+
+} # while
+

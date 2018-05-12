@@ -1,0 +1,3 @@
+#!/bin/sh
+#clustalw alignment of an input file. output alignment is in pir format
+clustalw -infile=$1 -output=PIR -align 2>&1 > /dev/null
