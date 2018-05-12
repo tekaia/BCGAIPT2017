@@ -1,0 +1,155 @@
+#!/bin/sh
+
+#--------------------------------------------------------
+# script to run blastp program versus a proteome db
+# For usage run : blastallgenomes -h
+#
+# $1 = proteome db  (complete name) exp. GMYTU.pep
+# $2 = organism of the db (upper case) exp. MYTU
+# $3 = organism of the db (lower case) exp. mytu
+# $4 = organism which seqs to compare to organism db (uppercase) : MYBO
+# $5 = same name writeen in lower case exp. mybo
+# $6 = substitution matrix exp. pam250, default is blosum62
+# $7 = blp
+# $8 = [y,Y,n,N] save or not blastp output
+#
+# exp of use : blastall GMYTU.pep MYTU mytu MYBO mybo blosum62 blp [y,n,Y,N]
+#
+#Final results include: allxxyy.HS, bestxxyy.HS, freqorfxx.xx, nomorf,.. files needed for mcl clustering
+#---------------------------------------------------------
+
+ if test $1 = "-h"
+ then
+ echo
+ echo "Usage: blastall DB O1 o1 O2 o2 matrix prog y/n"
+ echo 
+ echo "DB is the organism proteome db (exp. GMYTU.pep)"
+ echo "O1 is the organism code (exp. MYTU)" 
+ echo "o1 is the organism code (exp. mytu)"
+ echo "O2 is the organism test sequences code (exp, MYBO)"
+ echo "o2 the same in lower case (exp, mybo)"
+ echo "matrix is a substition matrix (default is blosum62)"
+ echo " prog is blastp.."
+ echo " where matrix is an option"
+ echo " y/n to save or not the blast results"
+ echo " "
+ echo
+ exit
+ fi
+
+ BLASTP="blastp"
+
+#these PATH names should be adapted
+ PD="~/home0/data" # Path to data
+ DB="$PD/$1"
+
+ PR="~/home0/genanal/genomes"  # path to genomes
+ DIRRES=`echo $PR/$4/$2seqnew/$BLASTP$5$3res`
+
+#blastp all significant hits
+
+# echo "$DIRRES"
+ test ! -d $PR/$4/$2seqnew && mkdir $PR/$4/$2seqnew
+
+ $All = $PR/$4/$2seqnew/all$4$2
+
+ if test $8 = "y"
+ then 
+ test ! -d $DIRRES && mkdir $DIRRES
+ fi
+
+ if test $8 = "Y"
+ then
+ test ! -d $DIRRES && mkdir $DIRRES
+ fi
+
+  SEQS="find $PD/all$5prt.fasta -name *.prt -print"
+
+ if test $6 = ""
+ then
+ $6="blosum62"
+ exit
+ fi
+
+#blastp comparisons
+	for file in `$SEQS`
+	do
+ FILE=`echo $file | sed -e "s/\/.*fasta\///g"`;
+ cp $file .
+ `$BLASTP -db $DB -query $FILE -use_sw_tback -evalue 1.e-9 -seg yes -num_description 300 -num_alignments 300 -outfmt 6 -out $FILE.blp6`
+
+  cat $FILE.blp6 >> $All
+  rm $FILE.blp6
+
+  if test $8 = "Y"
+  then
+ `$BLASTP -db $DB -query $FILE -use_sw_tback -evalue 1.e-9 -seg yes -num_description 300 -num_alignments 300 -out $FILE.$7`
+  fi
+  rm $FILE
+
+##save blast output if $8 =y or Y
+ if test $8 = "y" 
+  then 
+ `cp $FILE.$7 $DIRRES`
+  fi
+
+ if test $8 = "Y"
+    then
+    `cp $FILE.$7 $DIRRES`
+    fi
+
+        done
+
+#if species are distinct: extract for each ORF its best hits from $All using printbesthits.pl
+
+if test ! $4 = $2
+then
+cp $All .
+mv all$5$3 all$5$3.HS
+
+#specific format for use with mcl use:Query_orf, size, Hit_orf, "HS", e-value
+extractallHSval.pl all$5$3.HS &
+#output is all$5$3seqnew.HS
+
+#compute the corresponding best$5$3.HS file
+`printbesthits.pl all$5$3.HS`
+
+mv best$5$3.HS $PR/$4/$2seqnew/
+mv all$5$3.HS $PR/$4/$2seqnew/
+mv all$5$3seqnew.HS $PR/$4/$2seqnew/
+
+fi
+
+#case of $4 = $2
+#make sure self-significant hits are eliminated and check for reciprocity
+#note if $4=$2 then $5=$3 (small characters)
+if test $4 = $2
+then
+printallhits.pl all$5$3
+#output file is all$5$3.HS
+
+#check for reciprocity
+intrareciprocHS.pl all$5$3.HS > temp
+mv temp all$5$3.HS
+
+#specific format for mcl use:Query_orf, size, Hit_orf, "HS", e-value
+extractallHSval.pl all$5$3.HS &
+#output is all$5seqnew.HS
+
+#frequency of multiple matches
+cat all$5seqnew.HS | nom.pl | sort > temp
+freqsortednames.pl temp &
+#outfile is temp.freq.
+mv temp.freq $5.freq
+sort -n -k 2 -r $5.freq | nom.pl > nomorf
+
+#extract best hits
+printbesthits.pl all$5$3.HS > best$5$3.HS
+
+mv all$5$3.HS $PR/$4/$2seqnew/
+mv best$5$3.HS $PR/$4/$2seqnew/
+mv all$5seqnew.HS $PR/$4/$2seqnew/
+mv $5.freq $PR/$4/$2seqnew/
+mv nomorf $PR/$4/$2seqnew/
+
+fi

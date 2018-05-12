@@ -1,0 +1,10 @@
+#!/bin/sh
+
+#compute base compositions of a list of dna databases
+#Use: basecomp.sct list
+#where list includes a list of species dna databases(or sequences)
+
+for spec in `cat $1`
+do
+basecomp.pl $spec
+done

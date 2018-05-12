@@ -1,0 +1,35 @@
+#!/bin/perl
+
+#intra-species comparisons
+#Use printallhits.scr genomeslist
+#genomeslist includes a list of species codes
+#remove self-hits and check for reciprocity (all$spec$spec.HS)
+#and extracts best hits (best$spec$spec.HS)
+
+$IN=@ARGV[0]; # list of species codes
+
+$PR="/home0/genanal/genomes";  # path to genomes
+
+@GLIST = `cat $IN`;
+while ( $G = shift(@GLIST)
+{
+
+$spec = $G;
+$spec =~ tr/A-Z/a-z/;
+
+$ALL = "$PR/$G/$Gseqnew";
+system("cp $ALL/all$spec$spec .");
+
+system("printallhits.pl all$spec$spec");
+
+#check for reciprocity
+system("reciprocHS.pl all$spec$spec.HS > temp");
+system("mv temp all$spec$spec.HS"");
+
+#extract best hits
+system("printbesthits.pl all$spec$spec.HS > best$spec$spec.HS");
+
+system("mv all$spec$spec.HS $ALL/");
+system("mv best$spec$spec.HS $ALL");
+
+}#while

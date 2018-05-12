@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#run blastp to compare a list of proteomes (in list)
+#Use: blp.scr list
+
+#list includes a list of genome codes (one per line)
+
+for j in `cat $1`
+do
+
+for k  in `cat $1`
+do
+blp.pl   $j    $k
+done
+
+done

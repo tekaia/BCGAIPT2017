@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#Perform all pairwise comparisons between genomeslist members using blastp
+#Use compareallvsall.scr genomeslist
+#genomeslist includes codes for a list of species proteomes
+
+
+for spec in `cat $1`
+do
+   comparenewg2eachg.pl $spec $1
+done

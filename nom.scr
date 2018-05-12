@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+#extract sequence identifiers from a list of proteomes
+#use nom.scr genomelist &
+#where genomelist includes a list of species codes (one/line)
+#output: sequence identifiers for each each proteome
+
+$IN=@ARGV[0];
+$PR="/home0/genanal/genomes"  # path to genomes
+$path="~/home0/data/";
+
+open(IN,"$IN");
+while(<IN>)
+{
+
+ @tab=split(/\s+/, $_);
+
+$GEN = $tab[0];
+$gen = $GEN;
+$gen = ~ tr/A-Z/a-z/;
+
+$DIRRES = "$PR/$GEN/$genseqnew/";
+
+system('grep ">" $path/G$GEN.pep | nom.pl | sed -e "s/>//g" > $DIRES/$GEN.ident');
+
+}
+close(IN);
+
+

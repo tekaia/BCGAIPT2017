@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#Use freqaa1ine.scr list &
+#where list includes a list of proteome files
+
+for file in `cat $1`
+do
+freqaa1line.pl $file
+done

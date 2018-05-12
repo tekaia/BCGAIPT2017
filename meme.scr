@@ -1,0 +1,17 @@
+#/bin/sh
+
+#search for motifs in each cluster of orthologs using meme suite of programs
+#
+
+DIR = `echo "/home0/genanal/genomes/RBH/MCL/FAMSEQ"`
+
+cd $DIR
+
+for file in 'ls *.pep`
+do
+
+meme $file -protein -oc .  -nostatus -time 18000 -maxsize 60000 -mod zoops -nmotifs 15 -minw 50 -maxw 50
+mast meme.xml $file –oc  .  -nostatus
+
+done
+
