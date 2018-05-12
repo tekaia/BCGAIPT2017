@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#use: seqsize.scr
+#runs seqsize.pl for all sequences in allsaceprt.fasta
+For seq in `ls ~/home0/blastdb/allsaceprt.fasta/*.prt`
+do
+seqsize.pl $seq
+done
+

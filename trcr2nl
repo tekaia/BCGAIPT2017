@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+
+#translates "\r" into "\n"
+#Use trcr2nl $1
+
+
+tr '\r' '\n' < $1 > $1.nl
